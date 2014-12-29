@@ -1,0 +1,27 @@
+%PROGRAM% - %DESCRIPTION%
+
+This program which generates a static web site from GPX tracks, optionally
+adding links to Flickr pictures.
+
+usage:
+
+    %PROGRAM% [options] in-dir out-dir
+
+where:
+
+    in-dir  - directory with GPX files to process
+    out-dir - directory to generate output files
+
+options:
+
+    -f --flickr <api-key>      Flickr API key
+    -m --max <number>          only process specified # of maps
+    -v --verbose
+    -h --help
+
+You can also set the flickr key via environment variable `FLICKR`.
+
+about:
+
+homepage: %HOMEPAGE%
+version:  %VERSION%
