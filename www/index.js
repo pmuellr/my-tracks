@@ -17,8 +17,12 @@ function onLoad() {
   MyTracks.tracks.forEach(function(track){
     var marker = L.marker(track, {title: track.name})
     marker.addTo(Map)
+
+    var layer = L.geoJson(track.geojson, {style: function() {return {color:"red"}}})
+    layer.addTo(Map)
   })
 }
+
 
 //------------------------------------------------------------------------------
 // Licensed under the Apache License, Version 2.0 (the "License");
