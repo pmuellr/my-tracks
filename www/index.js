@@ -15,8 +15,22 @@ function onLoad() {
   Map.fitBounds(bounds, {padding:[20,20]})
 
   MyTracks.tracks.forEach(function(track){
+    if (track.geojson.features[0].geometry.coordinates.length == 0) return
+
     var marker = L.marker(track, {title: track.name})
     marker.addTo(Map)
+
+    marker.on("click", function() {
+      trackClicked(track)
+    })
+
+    var props = track.geojson.features[0].properties
+    var popup = "<b>" + props.name + "</b><br>"
+    popup += props.distanceS + "; "
+    popup += props.elapsedTimeS + "; "
+    popup += props.altUp + "ft up"
+
+    marker.bindPopup(popup).openPopup()
 
     var layer = L.geoJson(track.geojson, {style: function() {return {color:"red"}}})
     layer.addTo(Map)
@@ -38,6 +52,17 @@ function onLoad() {
   })
 
   Map.on("zoomlevelschange", zoomLevelChange)
+}
+
+//------------------------------------------------------------------------------
+function trackClicked(track) {
+  var coords = track.geojson.features[0].geometry.coordinates
+  coords = coords.map(function(coord){
+    return [coord[1], coord[0]]
+  })
+
+  var bounds = L.latLngBounds(coords)
+  Map.fitBounds(bounds, {padding:[10,10]})
 }
 
 //------------------------------------------------------------------------------
