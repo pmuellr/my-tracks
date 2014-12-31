@@ -30,7 +30,7 @@ function onLoad() {
     layer.addTo(Map)
   })
 
-  MyFlickr = MyFlickr.slice(0, 20)
+  // MyFlickr = MyFlickr.slice(0, 20)
   MyFlickr.forEach(function(photo){
     var icon = L.icon({
       iconUrl:   photo.img,
@@ -39,7 +39,9 @@ function onLoad() {
     })
 
     var marker = L.marker(photo, {icon: icon})
-    marker.addTo(Map)
+
+    photo.marker = marker
+    // marker.addTo(Map)
 
     var popupSize = scaledIcon(photo)
 
@@ -63,11 +65,29 @@ function onLoad() {
   var bounds = L.latLngBounds(MyTracks.tracks)
   Map.fitBounds(bounds, {padding:[20,20]})
 
-  Map.on("zoomlevelschange", zoomLevelChange)
+  // Map.on("dragend", onViewReset)
+  Map.on("moveend", onViewReset)
+  Map.on("zoomend", onViewReset)
 }
 
 //------------------------------------------------------------------------------
-function flickrClicked(track) {
+function onViewReset() {
+  var zoom   = Map.getZoom()  // show pictures at >= 14
+  var bounds = Map.getBounds()
+
+  // bounds.contains(latLng)
+
+  MyFlickr.forEach(function(photo){
+    Map.removeLayer(photo.marker)
+  })
+
+  if (zoom >= 14) {
+    MyFlickr.forEach(function(photo){
+      if (bounds.contains([photo.lat, photo.lon])) {
+        Map.addLayer(photo.marker)
+      }
+    })
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -79,15 +99,6 @@ function trackClicked(track) {
 
   var bounds = L.latLngBounds(coords)
   Map.fitBounds(bounds, {padding:[10,10]})
-}
-
-//------------------------------------------------------------------------------
-function zoomLevelChange() {
-  var zoom = Map.getZoom()
-
-  if (zoom < 14) {
-
-  }
 }
 
 //------------------------------------------------------------------------------
