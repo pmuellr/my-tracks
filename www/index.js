@@ -8,12 +8,6 @@ $(onLoad)
 function onLoad() {
   Map = L.map("map")
 
-  var layer = L.esri.basemapLayer("Topographic")
-  layer.addTo(Map)
-
-  var bounds = L.latLngBounds(MyTracks.tracks)
-  Map.fitBounds(bounds, {padding:[20,20]})
-
   MyTracks.tracks.forEach(function(track){
     if (track.geojson.features[0].geometry.coordinates.length == 0) return
 
@@ -39,19 +33,41 @@ function onLoad() {
   MyFlickr = MyFlickr.slice(0, 20)
   MyFlickr.forEach(function(photo){
     var icon = L.icon({
-      iconUrl:  photo.img,
-      iconSize: scaledIcon(photo)
+      iconUrl:   photo.img,
+      iconSize:  scaledIcon(photo),
+      className: "flickr-icon",
     })
 
     var marker = L.marker(photo, {icon: icon})
     marker.addTo(Map)
 
-    marker.on("click", function() {
-      window.open(photo.url, "flickr_image")
-    })
+    var popupSize = scaledIcon(photo)
+
+    var popup = "<img src='" + photo.img + "'" +
+      " width="  + (popupSize[0]*10) +
+      " height=" + (popupSize[1]*10) +
+      ">" +
+      "<br>" +
+      "<a target='flickr' href='" + photo.url + "'>see on flickr</a>"
+
+    var options = {
+      maxWidth: 640
+    }
+
+    marker.bindPopup(popup, options).openPopup()
   })
 
+  var layer = L.esri.basemapLayer("Topographic")
+  layer.addTo(Map)
+
+  var bounds = L.latLngBounds(MyTracks.tracks)
+  Map.fitBounds(bounds, {padding:[20,20]})
+
   Map.on("zoomlevelschange", zoomLevelChange)
+}
+
+//------------------------------------------------------------------------------
+function flickrClicked(track) {
 }
 
 //------------------------------------------------------------------------------
