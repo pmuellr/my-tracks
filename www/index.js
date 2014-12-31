@@ -21,8 +21,44 @@ function onLoad() {
     var layer = L.geoJson(track.geojson, {style: function() {return {color:"red"}}})
     layer.addTo(Map)
   })
+
+  MyFlickr = MyFlickr.slice(0, 20)
+  MyFlickr.forEach(function(photo){
+    var icon = L.icon({
+      iconUrl:  photo.img,
+      iconSize: scaledIcon(photo)
+    })
+
+    var marker = L.marker(photo, {icon: icon})
+    marker.addTo(Map)
+
+    marker.on("click", function() {
+      window.open(photo.url, "flickr_image")
+    })
+  })
+
+  Map.on("zoomlevelschange", zoomLevelChange)
 }
 
+//------------------------------------------------------------------------------
+function zoomLevelChange() {
+  var zoom = Map.getZoom()
+
+  if (zoom < 14) {
+
+  }
+}
+
+//------------------------------------------------------------------------------
+function scaledIcon(photo) {
+  var w = photo.width
+  var h = photo.height
+
+  if (w > h)
+    return [64, 64 * (h / w)]
+  else
+    return [64 * (w / h), 64]
+}
 
 //------------------------------------------------------------------------------
 // Licensed under the Apache License, Version 2.0 (the "License");

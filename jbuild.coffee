@@ -17,7 +17,7 @@ mkdir "-p", "tmp"
 tasks.build = ->
   tasks.bower()
   # build_browser_version()
-  exec "node my-tracks.js --verbose --max 5 ../gps-tracks/tracks tmp/out"
+  exec "node my-tracks.js --verbose --max 500 ../gps-tracks/tracks tmp/out"
 
 #-------------------------------------------------------------------------------
 tasks.watch = ->
